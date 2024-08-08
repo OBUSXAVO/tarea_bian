@@ -1,0 +1,115 @@
+swagger: "2.0"
+info:
+  description: "API para manejar una solicitud y respuesta de Retrieve."
+  version: "1.0.0"
+  title: "savings-account"
+
+host: "api.example.com"
+basePath: "/v1"
+schemes:
+  - "https"
+
+paths:
+  /savings-account/v1.0/retrieve:
+    post:
+      tags:
+        - "Retrieve"
+      summary: "Obtiene información de cuenta."
+      description: "Recibe un RetrieveAccountRequest y retorna un RetrieveAccountResponse con la información de la cuenta."
+      operationId: "retrieveAccount"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Trama de solicitud RetrieveAccountRequest."
+          required: true
+          schema:
+            $ref: "#/definitions/RetrieveAccountRequest"
+      responses:
+        '200':
+          description: "Trama de respuesta RetrieveAccountResponse."
+          schema:
+            $ref: "#/definitions/RetrieveAccountResponse"
+        '400':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "BadRequest"
+        '401':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "Unauthorized"
+        '403':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "Forbidden"
+        '404':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "NotFound"
+        '429':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "TooManyRequests"
+        '500':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "InternalServerError"
+
+definitions:
+  RetrieveAccountRequest:
+    type: "object"
+    required:
+      - "Account"
+    properties:
+      Account:
+        type: "object"
+        required:
+          - "Identification"
+        properties:
+          Identification:
+            type: "string"
+            example: "13423423424"
+
+  RetrieveAccountResponse:
+    type: "object"
+    required:
+      - "Account"
+    properties:
+      Account:
+        type: "object"
+        required:
+          - "Identification"
+          - "BaseCurrency"
+          - "Status"
+          - "Type"
+        properties:
+          Identification:
+            type: "string"
+            example: "12312312"
+          BaseCurrency:
+            type: "string"
+            example: "USD"
+          Status:
+            type: "string"
+            example: "active"
+          Type:
+            type: "string"
+            example: "saving"
+  HTTPError:
+    type: "object"
+    properties:
+      status_code:
+        type: "string"
+      status:
+        type: "string"
+      message:
+        type: "string"

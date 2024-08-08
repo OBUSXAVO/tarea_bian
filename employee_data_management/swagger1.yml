@@ -1,0 +1,109 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: savings-account
+  description: API para recuperar información basada en la identificación de una persona.
+
+host: "api.ejemplo.com"
+basePath: "/v1"
+schemes:
+  - "https"
+
+paths:
+  /savings-account/v1.0/initiate:
+    post:
+      summary: Retrieve account information based on person identification
+      description: |
+        Este endpoint permite recuperar la información de la cuenta basada en la identificación de la persona proporcionada.
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "RetrieveRequest"
+          description: "Datos de la solicitud"
+          required: true
+          schema:
+            $ref: "#/definitions/InitiateAccountRequest"
+      responses:
+        '200':
+          description: Información de la cuenta obtenida exitosamente
+          schema:
+            $ref: "#/definitions/InitiateAccountResponse"
+        '400':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "BadRequest"
+        '401':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "Unauthorized"
+        '403':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "Forbidden"
+        '404':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "NotFound"
+        '429':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "TooManyRequests"
+        '500':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "InternalServerError"
+
+definitions:
+  InitiateAccountRequest:
+    type: "object"
+    properties:
+      PersonIdentification:
+        type: "object"
+        properties:
+          TypeOfIdentification:
+            type: "string"
+            description: "Tipo de identificación (e.g., 1 para cédula de identidad)"
+          IdentityCardNumber:
+            type: "string"
+            description: "Número de cédula de identidad"
+        required:
+          - "TypeOfIdentification"
+          - "IdentityCardNumber"
+    required:
+      - "PersonIdentification"
+
+  InitiateAccountResponse:
+    type: "object"
+    properties:
+      Account:
+        type: "object"
+        properties:
+          Identification:
+            type: "string"
+            description: "Identificación de la cuenta"
+          BaseCurrency:
+            type: "string"
+            description: "Moneda base de la cuenta (e.g., USD)"
+        required:
+          - "Identification"
+          - "BaseCurrency"
+    required:
+      - "Account"
+  HTTPError:
+    type: "object"
+    properties:
+      status_code:
+        type: "string"
+      status:
+        type: "string"
+      message:
+        type: "string"
