@@ -1,0 +1,119 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: "employee-data-management"
+  description: API para manejar la solicitud y respuesta de identificación de personas
+host: api.ejemplo.com
+schemes:
+  - https
+paths:
+  /employee-data-management/v1.0/retrieve:
+    post:
+      summary: Retrieve person information
+      description: Recupera información de la persona basada en la identificación proporcionada
+      operationId: retrievePerson
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Datos de solicitud de recuperación de persona
+          required: true
+          schema:
+            $ref: '#/definitions/RetrieveRequest'
+      responses:
+        '200':
+          description: Respuesta exitosa
+          schema:
+            $ref: '#/definitions/RetrieveResponse'
+        '400':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "BadRequest"
+        '401':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "Unauthorized"
+        '403':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "Forbidden"
+        '404':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "NotFound"
+        '429':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "TooManyRequests"
+        '500':
+          schema:
+            $ref: >-
+              #/definitions/HTTPError
+          description: "InternalServerError"  
+definitions:
+  RetrieveRequest:
+    type: object
+    properties:
+      PersonIdentification:
+        type: object
+        properties:
+          TypeOfIdentification:
+            type: string
+          IdentityCardNumber:
+            type: string
+        required:
+          - TypeOfIdentification
+          - IdentityCardNumber
+    required:
+      - PersonIdentification
+  RetrieveResponse:
+    type: object
+    properties:
+      PersonIdentification:
+        type: object
+        properties:
+          TypeOfIdentification:
+           type: string
+          IdentityCardNumber:
+            type: string
+          PersonName:
+            type: object
+            properties:
+              GivenName:
+                type: string
+              MiddleName:
+                type: string
+            required:
+              - GivenName
+          Contact:
+            type: object
+            properties:
+              MobilePhoneNumber:
+                type: string
+              PersonalEmailAddress:
+                type: string
+            required:
+              - MobilePhoneNumber
+              - PersonalEmailAddress
+        required:
+          - PersonName
+          - Contact
+    required:
+      - PersonIdentification
+  HTTPError:
+    type: "object"
+    properties:
+      status_code:
+        type: "string"
+      status:
+        type: "string"
+      message:
+        type: "string"
